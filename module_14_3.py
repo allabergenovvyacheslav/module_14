@@ -95,7 +95,7 @@ async def inform(message):
 async def get_buying_list(message):
     for x in range(1, 5):
         await message.answer(f'Product{x} | Описание{x} | Цена: {x*100}')
-        with open(f'images/1.jpg', 'rb') as img:
+        with open(f'images/{x}.jpg', 'rb') as img:
             await message.answer_foto(img)
     await message.answer('Выберите продукт для покупки:', reply_markup=keyboard_3)
 
