@@ -76,18 +76,18 @@ async def start_message(message):
 
 @dp.message_handler(text='Рассчитать')
 async def main_menu(message):
-    button_3 = InlineKeyboardButton(text='Рассчитать норму калорий', callback_data='calories')
-    button_4 = InlineKeyboardButton(text='Формулы расчёта', callback_data='formulas')
+    button_4 = InlineKeyboardButton(text='Рассчитать норму калорий', callback_data='calories')
+    button_5 = InlineKeyboardButton(text='Формулы расчёта', callback_data='formulas')
     keyboard_2: InlineKeyboardMarkup = InlineKeyboardMarkup()
-    keyboard_2.add(button_3)
     keyboard_2.add(button_4)
+    keyboard_2.add(button_5)
     await message.answer('Выберите опцию:', reply_markup=keyboard_2)
 
 
-@dp.message_handler(text='Информация')
+@dp.message_handler(text='Чем полезен этот бот')
 async def inform(message):
     await message.answer(
-        'Этот бот помогает рассчитать сколько вам необходимо потреблять ежедневно калорий.'
+        'Этот бот призван помочь вам не перебрать лишних калорий.'
     )
 
 
@@ -96,7 +96,7 @@ async def get_buying_list(message):
     for x in range(1, 5):
         await message.answer(f'Product{x} | Описание{x} | Цена: {x*100}')
         with open(f'images/{x}.jpg', 'rb') as img:
-            await message.answer_foto(img)
+            await message.answer_photo(img)
     await message.answer('Выберите продукт для покупки:', reply_markup=keyboard_3)
 
 
@@ -115,19 +115,18 @@ async def get_formulas(call):
 
 @dp.callback_query_handler(text='calories')
 async def set_gender(call):
-    button_9 = InlineKeyboardButton(text='men', callback_data='gender')
-    button_10 = InlineKeyboardButton(text='women', callback_data='gender')
+    button_6 = InlineKeyboardButton(text='man', callback_data='gender')
+    button_7 = InlineKeyboardButton(text='woman', callback_data='gender')
     keyboards_4: InlineKeyboardMarkup = InlineKeyboardMarkup()
-    keyboards_4.add(button_9)
-    keyboards_4.add(button_10)
-    await call.message.answer('Назовите свой пол: men/women', reply_markup=keyboards_4)
+    keyboards_4.add(button_6, button_7)
+    await call.message.answer('Выберите свой пол: man/woman', reply_markup=keyboards_4)
     await UserState.gender.set()
 
 
-@dp.message_handler(state=UserState.gender)
-async def set_age(message, state):
-    await state.update_data(gender=message.text.lower())
-    await message.answer('Введите свой возраст:')
+@dp.callback_query_handler(state=UserState.gender)
+async def set_age(call, state):
+    await state.update_data(gender=call.message.text)
+    await call.message.answer('Введите свой возраст:')
     await UserState.age.set()
 
 
@@ -149,22 +148,22 @@ async def set_weight(message, state):
 async def send_calories(message, state):
     await state.update_data(weight=int(message.text))
     data = await state.get_data()
-    if data['gender'] == 'women':
-        res_for_women = (
+    if data['gender'] == 'woman':
+        res_for_woman = (
                 10 * data['weight']
                 + 6.25 * data['growth']
                 - 5 * data['age']
                 - 161
         )
-        await message.answer(f'Ваша норма калорий {res_for_women}')
-    if data['gender'] == 'men':
-        res_for_men = (
+        await message.answer(f'Ваша норма калорий {res_for_woman}')
+    if data['gender'] == 'man':
+        res_for_man = (
                 10 * data['weight']
                 + 6.25 * data['growth']
                 - 5 * data['age']
                 + 5
         )
-        await message.answer(f'Ваша норма калорий {res_for_men}')
+        await message.answer(f'Ваша норма калорий {res_for_man}')
     await state.finish()
 
 
