@@ -1,6 +1,19 @@
 # -*- coding: utf-8 -*-
 
 
+# Задача "Продуктовая база":
+#
+# Изменения в Telegram-бот:
+
+# В самом начале запускайте ранее написанную функцию get_all_products.
+
+# Измените функцию get_buying_list в модуле с Telegram-ботом, используя вместо обычной
+# нумерации продуктов функцию get_all_products. Полученные записи используйте в выводимой надписи:
+# "Название: <title> | Описание: <description> | Цена: <price>"
+
+# Перед запуском бота пополните вашу таблицу Products 4-мя или более записями для последующего
+# вывода в чате Telegram-бота.
+
 
 
 from aiogram import Bot, Dispatcher, executor, types
@@ -12,9 +25,11 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from crud_functions import *
 
+
 api = '7817004865:AAFBqVj3Xa3maRLafdwpfAYqoBnVr0IBUdw'
 bot = Bot(token=api)
 dp = Dispatcher(bot, storage=MemoryStorage())
+
 
 keyboard_3 = InlineKeyboardMarkup(
     inline_keyboard=[
@@ -57,12 +72,17 @@ async def main_menu(message):
     await message.answer('Выберите опцию:', reply_markup=keyboard_2)
 
 
+@dp.message_handler(text='Информация')
+async def inform(message):
+    await message.answer('Этот бот призван помочь вам не перебрать лишних калорий.')
+
+
 @dp.message_handler(text='Купить')
 async def get_buying_list(message):
     all_product = get_all_products()
-    for i in range(len(all_product)):
-        await message.answer(f'{all_product[i][1]} | {all_product[i][2]} | {all_product[i*100][3]}')
-        with open(f'images/{i}.jpg', 'rb') as img:
+    for x in range(1, 5):
+        await message.answer(f'{all_product[x][1]} {all_product[x][2]} {all_product[x][3]}')
+        with open(f'images/{x}.jpg', 'rb') as img:
             await message.answer_photo(img)
     await message.answer('Выберите продукт для покупки:', reply_markup=keyboard_3)
 
