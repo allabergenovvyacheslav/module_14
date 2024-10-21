@@ -24,14 +24,14 @@ title TEXT NOT NULL,
 description TEXT,
 price INT NOT NUll
 );
-CREATE TABLE IF NOT EXISTS Users(
-id INT PRIMARY KEY,
-username TEXT NOT NULL,
-email TEXT NOT NULL,
-age INT NOT NUll,
-balance INT NOT NUll
-);
-''')
+# CREATE TABLE IF NOT EXISTS Users(
+# id INT PRIMARY KEY,
+# username TEXT NOT NULL,
+# email TEXT NOT NULL,
+# age INT NOT NUll,
+# balance INT NOT NUll
+# );
+# ''')
 
 
 def get_all_products():
