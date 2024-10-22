@@ -113,6 +113,9 @@ async def set_age(message, state):
     await message.answer('Вы зарегистрировались, для продолжения введите /start')
     await state.finish()
 
+#-----------------END-ADMIN---------------
+
+#--------------------MAIN-----------------
 
 class UserState(StatesGroup):
     gender_man = State()
@@ -120,9 +123,7 @@ class UserState(StatesGroup):
     age = State()
     growth = State()
     weight = State()
-#-----------------END-ADMIN---------------
 
-#--------------------MAIN-----------------
 
 @dp.message_handler(commands=['start'])
 async def start_message(message):
