@@ -58,8 +58,8 @@ import crud_functions
 from crud_functions import *
 
 
-api = ''
-bot = Bot(token=api)
+api = '7817004865:AAFBqVj3Xa3maRLafdwpfAYqoBnVr0IBUdw'
+bot = Bot(token=api, parse_mode='HTML')
 dp = Dispatcher(bot, storage=MemoryStorage())
 
 
@@ -73,7 +73,7 @@ keyboard_3 = InlineKeyboardMarkup(
     resize_keyboard=True
 )
 
-
+#-------------ADMIN---------------
 class RegistrationState(StatesGroup):
     username = State()
     email = State()
@@ -120,7 +120,9 @@ class UserState(StatesGroup):
     age = State()
     growth = State()
     weight = State()
+#-----------------END-ADMIN---------------
 
+#--------------------MAIN-----------------
 
 @dp.message_handler(commands=['start'])
 async def start_message(message):
@@ -170,8 +172,10 @@ async def send_confirm_message(call):
 
 @dp.callback_query_handler(text='formulas')
 async def get_formulas(call):
-    await call.message.answer('для мужчин: 10 х вес (кг) + 6,25 x рост (см) – 5 х возраст (г) + 5; '
-                              'для женщин: 10 x вес (кг) + 6,25 x рост (см) – 5 x возраст (г) – 161.')
+    await call.message.answer(
+        'для <u>мужчин:</u> 10 <i>х</i> вес(кг) <i>+</i> 6,25 <i>х</i> рост(см) – 5 <i>х</i> возраст(г) <i>+</i> 5;\n\n'
+        'для <u>женщин:</u> 10 <i>х</i> вес(кг) <i>+</i> 6,25 <i>х</i> рост(см) – 5 <i>х</i> возраст(г) <i>-</i> 161'
+    )
     await call.answer()
 
 
@@ -187,14 +191,14 @@ async def set_gender(call):
 
 
 @dp.callback_query_handler(state=UserState.gender_man)
-async def set_age(call, state):
+async def set_age_man(call, state):
     await state.update_data(gender_man=call.message)
     await call.message.answer('Введите свой возраст:')
     await UserState.age.set()
 
 
 @dp.callback_query_handler(state=UserState.gender_woman)
-async def set_age(call, state):
+async def set_age_woman(call, state):
     await state.update_data(gender_woman=call.message)
     await call.message.answer('Введите свой возраст:')
     await UserState.age.set()
