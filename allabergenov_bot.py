@@ -12,7 +12,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from crud_functions import *
 
 
-api = ''
+api = '7817004865:AAFBqVj3Xa3maRLafdwpfAYqoBnVr0IBUdw'
 bot = Bot(token=api, parse_mode='HTML')
 dp = Dispatcher(bot, storage=MemoryStorage())
 logging.basicConfig(level=logging.INFO)
@@ -52,6 +52,10 @@ keyboard_5: InlineKeyboardMarkup = InlineKeyboardMarkup()
 button_8 = InlineKeyboardButton(text='Все верно', callback_data='correct')
 button_9 = InlineKeyboardButton(text='Редактировать', callback_data='incorrect')
 keyboard_5.add(button_8, button_9)
+
+keyboard_6: InlineKeyboardMarkup = InlineKeyboardMarkup()
+button_10 = InlineKeyboardButton(text='Получить', callback_data='get_result')
+keyboard_6.add(button_10)
 
 
 #-------------ADMIN---------------
@@ -106,6 +110,7 @@ class UserState(StatesGroup):
     growth = State()
     weight = State()
     check_state = State()
+    get_result = State()
 
 
 @dp.message_handler(commands=['start'])
@@ -196,15 +201,16 @@ async def correct_data(call, state):
     call.data = await state.get_data()
     if call.data['check_state'] == 'correct':
         await call.answer('Данные приняты!')
-        await call.message.answer(f'Для результата нажмите команду:\n /return')
+        await call.message.answer(f'Для результата нажмите - получить', reply_markup=keyboard_6)
+        await UserState.get_result.set()
     else:
         await call.message.answer('Выберите свой пол: муж/жен', reply_markup=keyboards_4)
         await UserState.gender.set()
 
 
-@dp.message_handler(commands=['return'])
-async def return_data(message, state):
-    global res_for_woman, res_for_man
+@dp.callback_query_handler(state=UserState.get_result)
+async def return_data(call, state):
+    await state.update_data(get_result=call.data)
     data = await state.get_data()
     if data['gender'] == 'woman':
         res_for_woman = (
@@ -213,7 +219,7 @@ async def return_data(message, state):
                     - 5 * data['age']
                     - 161
             )
-    await message.answer(f'Ваша норма суточная норма калорий\n {res_for_woman} ккал')
+        await call.message.answer(f'Ваша норма суточная норма калорий {res_for_woman} ккал')
     if data['gender'] == 'man':
         res_for_man = (
                 10 * data['weight']
@@ -221,7 +227,7 @@ async def return_data(message, state):
                 - 5 * data['age']
                 + 5
         )
-    await message.answer(f'Ваша норма суточная норма калорий\n {res_for_man} ккал')
+        await call.message.answer(f'Ваша норма суточная норма калорий {res_for_man} ккал')
     await state.finish()
 
 
