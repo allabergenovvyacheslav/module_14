@@ -12,7 +12,7 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from crud_functions import *
 
 
-api = ''
+api = '7817004865:AAFBqVj3Xa3maRLafdwpfAYqoBnVr0IBUdw'
 bot = Bot(token=api, parse_mode='HTML')
 dp = Dispatcher(bot, storage=MemoryStorage())
 logging.basicConfig(level=logging.INFO)
@@ -133,7 +133,9 @@ async def inform(message):
 async def get_buying_list(message):
     all_product = get_all_products()
     for x in range(1, 5):
-        await message.answer(f'{all_product[x][1]} {all_product[x][2]} {all_product[x][3]}')
+        await message.answer(f'{all_product[x][1]} '
+                             f'{all_product[x][2]} '
+                             f'{all_product[x][3]}')
         with open(f'images/{x}.jpg', 'rb') as img:
             await message.answer_photo(img)
     await message.answer('Выберите продукт для покупки:', reply_markup=keyboard_3)
