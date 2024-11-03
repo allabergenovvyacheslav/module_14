@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-API = "7774774052:AAGbFPOnluAjD2ZoIc5iFT18SYzaZWMhLRc"
+API = ""
 
 admin = [93372553]
 
